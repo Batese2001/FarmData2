@@ -6,20 +6,33 @@
   <p>UserName: <span data-cy="user-name">{{ userName }}</span></p>
 
   <!-- Example of a v-model binding -->
-  <p>Type comment: <input data-cy="comment-field" type='text' v-model='comment'>
+  <div class="input-group">
+    <span class="input-group-addon" id="comment-addon">
+        <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+    </span>
+    <input type="text" class="form-control" placeholder="Comment" data-cy="comment-field" aria-describedby="comment-addon" v-model='comment'>
+  </div>
+
+  <!-- Demontrates binding from the Vue model -->
   <p>Comment: <span data-cy="comment">{{ comment }}</span></p>
 
   <!-- Example of event handling and api call -->
-  <p><button data-cy="get-name-button" @click='getFarmName'>Get Farm Name</button></p>
+  <button data-cy="get-name-button" type="button" class="btn btn-success" @click='getFarmName'>Get Farm Name</button>
   <p>Farm Name: <span data-cy="farm-name">{{ farm }}</span></p>
 
-  <!-- Example of event hadling, api call and v-for -->
-  <p><button data-cy="get-fields-button" @click='getFieldList'>Get Fields</button>
-  <p>Response:</p>
-  <UL data-cy="field-list">
-    <li v-for='field in fields'>{{ field.name }}</li>
-  </UL>
-
+  <!-- Example of v-for and using values obtained on page load -->
+  <div class="form-gropup">
+    <label for="field-button">Field: </label>
+    <div class="btn-group" id="field-button">
+      <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ field }}<span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" data-cy="field-list">
+        <li v-for='field in fields'>
+          <a @click="setField(field.name);">{{ field.name }}</a>
+       </li>
+      </ul>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -30,10 +43,14 @@ new Vue({
   el: '#ex1',
   data: {
 	  comment: null,
-	  farm: null,
+      farm: null,
+      field: '...',
       fields: null,
       userID: fd2UserID,
       userName: fd2UserName,
+  },
+  mounted: function() {
+    this.getFieldList();
   },
   methods: {
     getFarmName() {
@@ -47,7 +64,10 @@ new Vue({
         .get('/taxonomy_term.json?bundle=farm_areas&area_type=field')
         .then(response => (this.fields = response.data.list))
         .catch(error => console.log(error))
-    }
+    },
+    setField(val) {
+        this.field = val;
+    },
   }
 });
 </script>

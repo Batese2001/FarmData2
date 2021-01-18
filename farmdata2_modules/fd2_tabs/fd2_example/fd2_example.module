@@ -89,13 +89,14 @@ function fd2_example_preprocess_page() {
   $path = implode("\n",array('farm/fd2-example*',));
 
   if (drupal_match_path($alias, $path)) {
-    // Include the external JS libraries that are used here so they are cached by drupal.
-    drupal_add_js('https://unpkg.com/vue/dist/vue.min.js','external');
-    drupal_add_js('https://unpkg.com/axios/dist/axios.min.js','external');
+    drupal_add_js('https://unpkg.com/vue@2.6.12/dist/vue.min.js','external');
+    drupal_add_js('https://unpkg.com/axios@0.21.1/dist/axios.min.js','external');
 
     // Define some useful variables in the JavaScript for page.
     global $user;
     $cmd="var fd2UserID=".$user->uid."; var fd2UserName='".$user->name."';";
     drupal_add_js($cmd,'inline');
   }
+
+
 };
